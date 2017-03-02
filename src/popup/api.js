@@ -1,5 +1,7 @@
 
-window.CaptureAPI = (function() {
+function $(id) { return document.getElementById(id); }
+
+const CaptureAPI = (function() {
 
     var MAX_PRIMARY_DIMENSION = 15000 * 2,
         MAX_SECONDARY_DIMENSION = 4000 * 2,
@@ -260,7 +262,7 @@ window.CaptureAPI = (function() {
             }
         });
 
-        chrome.tabs.executeScript(tab.id, {file: 'page.js'}, function() {
+        chrome.tabs.executeScript(tab.id, {file: 'dist/page.js'}, function() {
             if (timedOut) {
                 console.error('Timed out too early while waiting for ' +
                               'chrome.tabs.executeScript. Try increasing the timeout.');
@@ -306,3 +308,5 @@ window.CaptureAPI = (function() {
     };
 
 })();
+
+export default CaptureAPI;

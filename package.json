@@ -1,0 +1,14 @@
+{
+  "name": "site-to-pdf-extension",
+  "version": "3.0.0",
+  "author": "Burst / Bart Langelaan",
+  "license": "ISC",
+  "devDependencies": {
+    "html-webpack-plugin": "^2.28.0",
+    "webpack": "^2.2.1"
+  },
+  "scripts": {
+    "start": "webpack --watch",
+    "build": "webpack"
+  }
+}

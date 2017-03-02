@@ -12,6 +12,10 @@ https://github.com/mrcoles/full-page-screen-capture-chrome-extension
 Change Log:
 
 ```
+3.0.0 - Rewrite full module to use Webpack and generate PDFs instead of images
+-----
+All 2.x code isn't covered by the MIT license, so this version number is skipped.
+-----
 1.0.1 — 2016-05-14 — fix incognito mode "File not found" bug and better tab handling
 1.0.0 — 2016-05-09 — this is a major release: introduces keyboard shortcut, splitting of images for pages that are too long, better handling of zoomed/emulator pages, more subtle gray icon, SVG support, and stability fixes (thank you @bluememory14, @BSierakowski, @denilsonsa, and all submitters of bug reports)
 0.0.15 — 2015-04-05 — add timestamp to images so they are unique paths (via @HetIsNiels) and popup display fix

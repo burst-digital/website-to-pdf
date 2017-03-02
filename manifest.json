@@ -1,11 +1,11 @@
 {
-  "name": "Full Page Screen Capture",
-  "version": "1.0.1",
+  "name": "Site crawler to PDF",
+  "version": "3.0.0",
   "manifest_version": 2,
   "description": "Screen capture your current page in entirety and reliably!",
   "browser_action": {
     "default_icon": "icon-999.png",
-    "default_popup": "popup.html"
+    "default_popup": "dist/popup.html"
   },
   "commands": {
     "_execute_browser_action": {

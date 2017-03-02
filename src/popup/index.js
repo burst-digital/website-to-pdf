@@ -1,6 +1,7 @@
 // Copyright (c) 2012,2013 Peter Coles - http://mrcoles.com/ - All rights reserved.
 // Use of this source code is governed by the MIT License found in LICENSE
 
+import CaptureAPI from './api';
 
 //
 // State fields
