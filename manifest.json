@@ -7,6 +7,9 @@
     "default_icon": "icon-999.png",
     "default_popup": "dist/popup.html"
   },
+  "background": {
+    "scripts": ["dist/background.js"]
+  },
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
@@ -14,7 +17,7 @@
       }
     }
   },
-  "permissions": [ "activeTab" ],
+  "permissions": [ "activeTab", "unlimitedStorage", "downloads" ],
   "icons": {
     "16": "icon16-999.png",
     "48": "icon48-999.png",

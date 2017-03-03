@@ -3,7 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: {
-        page: './src/page/index.js',
+        inject: './src/inject/index.js',
+        background: './src/background/index.js',
         popup: './src/popup/index.js'
     },
     output: {
