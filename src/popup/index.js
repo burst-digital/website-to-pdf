@@ -22,12 +22,6 @@ const status = document.getElementById('status');
         tab = (await chromep.tabs.query({active: true, currentWindow: true}))[0];
 
         console.log('Got the active tab:', tab);
-
-        /**
-         * Inject inject.js into the inject
-         */
-        await chromep.tabs.executeScript(tab.id, {file: 'dist/inject.js'});
-
     }
     catch (error) {
 

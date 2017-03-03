@@ -11,10 +11,11 @@ chrome.runtime.onMessage.addListener((message = {}, sender, sendResponse) => {
             window.scrollTo(...message.pos);
             window.requestAnimationFrame(() => window.requestAnimationFrame(() => window.requestAnimationFrame(() => sendResponse([window.scrollX, window.scrollY]))));
             return true;
+        case 'getLinks':
+            sendResponse(getLinks());
+            return;
     }
-})
-
-var CAPTURE_DELAY = 150;
+});
 
 function max(nums) {
     return Math.max.apply(Math, nums.filter(function (x) {
@@ -85,4 +86,9 @@ function getPositions() {
 
     return {total, arrangements, window: {width: window.innerWidth, height: window.innerHeight}};
 
+}
+
+function getLinks() {
+    return Array.prototype.slice.call(document.getElementsByTagName('a'))
+        .map(element => element.href);
 }

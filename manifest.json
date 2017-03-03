@@ -17,7 +17,7 @@
       }
     }
   },
-  "permissions": [ "activeTab", "unlimitedStorage", "downloads" ],
+  "permissions": [ "activeTab", "tab", "unlimitedStorage", "downloads", "<all_urls>" ],
   "icons": {
     "16": "icon16-999.png",
     "48": "icon48-999.png",
