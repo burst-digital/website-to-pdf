@@ -55,10 +55,18 @@ class Page {
             this.pdf.addImage(dataUrl, pos[0], pos[1], this.positions.window.width, this.positions.window.height)
         }
 
-        await chromep.downloads.download({
-            url: this.pdf.output('datauristring'),
+        const pdfDataUri = this.pdf.output('bloburi');
+
+        console.log('Downloading now! Data uri is', pdfDataUri.length, 'chars long..');
+
+        const download = await chromep.downloads.download({
+            url: pdfDataUri,
             filename: 'pdfs/pdf.pdf'
         });
+
+        global.URL.revokeObjectURL(pdfDataUri)
+
+        console.log('Download done!', download);
     }
 
     getPositions(tab) {
