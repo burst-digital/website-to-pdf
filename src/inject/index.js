@@ -26,9 +26,6 @@ function max(nums) {
 function getPositions() {
 
     const body = document.body;
-    const backup = {
-        BodyStyleOverflowY: body ? body.style.overflowY : ''
-    };
 
     if (body) {
         body.style.overflowY = 'visible';
@@ -67,13 +64,8 @@ function getPositions() {
         total.width = xDelta;
     }
 
-    if (body) {
-        body.style.overflowY = backup.BodyStyleOverflowY;
-    }
-
-    // Disable all scrollbars. We'll restore the scrollbar state when we're done
-    // taking the screenshots.
-    //document.documentElement.style.overflow = 'hidden';
+    // Disable all scrollbars.
+    document.documentElement.style.overflow = 'hidden';
 
     while (yPos > -yDelta) {
         xPos = 0;

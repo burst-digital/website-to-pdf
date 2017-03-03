@@ -12,7 +12,7 @@ class ScanJob {
     }
 
     async _constructor({tab, batch = true}) {
-        console.log('New ScanJob for tab', tab);
+        console.debug('New ScanJob for tab', tab);
         const pages = [new Page({url: tab.url})];
 
         const filters = [
@@ -26,9 +26,6 @@ class ScanJob {
             await page.scan({tab, folder});
             const links = await page.getLinks(tab);
 
-
-            console.log(pages.map(page => page.url));
-
             links
                 .map(link => link.split('#')[0])
                 .filter(link => link.length)
@@ -39,14 +36,14 @@ class ScanJob {
                 })
                 .forEach(link => {
                     if(!pages.map(page => page.url).includes(link)) {
-                        console.log('Adding link', link, 'to index.')
+                        console.debug('Adding link', link, 'to index.')
                         pages.push(new Page({url: link}));
                     }
                 });
             page.done = true;
         }
 
-        console.log('All pages done.');
+        console.debug('All pages done.');
 
     }
 
@@ -62,13 +59,10 @@ class Page {
 
     async scan({tab, folder}) {
         tab = await chromep.tabs.get(tab.id);
-        console.log('Scanning tab ', tab);
-        if (tab.url != this.url) {
-            await chromep.tabs.update(tab.id, {url: this.url});
 
-            tab = await new Promise(r => {
+        if (tab.url != this.url) {
+            const loadingCompleted = new Promise(r => {
                 const onUpdate = async (tabId, info) => {
-                    console.log({tabId, info});
                     if(tabId == tab.id && info.status == 'complete'){
                         chrome.tabs.onUpdated.removeListener(onUpdate);
                         r(await chromep.tabs.get(tab.id));
@@ -76,38 +70,44 @@ class Page {
                 };
                 chrome.tabs.onUpdated.addListener(onUpdate);
             });
-
+            console.debug('Navigating to', this.url);
+            await chromep.tabs.update(tab.id, {url: this.url});
+            console.debug('Waiting for page to complete loading..')
+            await loadingCompleted;
         }
+
+        console.debug('Injecting script..');
         await chromep.tabs.executeScript(tab.id, {file: 'dist/inject.js'});
+        console.debug('Calculate positions..');
         const positions = await this.getPositions(tab);
 
-        console.log('Positions:', this.positions);
+        console.debug('Creating pdf..');
         let pdf = new jsPDF({
             unit: 'mm',
             format: [positions.total.width, positions.total.height]
         });
 
         for (let pos of positions.arrangements) {
+            console.debug('Scrolling page to', ...pos);
             pos = await this.scrollTo(tab, pos);
+            console.debug('Capturing page..');
             const dataUrl = await chromep.tabs.captureVisibleTab(tab.windowId, {format: 'png'});
+            console.debug('Adding image to pdf..');
             pdf.addImage(dataUrl, pos[0], pos[1], positions.window.width, positions.window.height)
         }
 
+        console.debug('Generating pdf..');
         let pdfDataUri = pdf.output('bloburi');
 
-        console.log('Downloading now! Data uri is', pdfDataUri.length, 'chars long..');
-
-        const download = await chromep.downloads.download({
+        console.debug('Downloading pdf..');
+        await chromep.downloads.download({
             url: pdfDataUri,
             filename: `pdfs/${folder}/${slug(tab.title)}.pdf`
         });
 
-        console.log('Download done!', download);
-
+        // Clean up
         global.URL.revokeObjectURL(pdfDataUri)
-
         pdfDataUri = null;
-
         pdf = null;
     }
 
