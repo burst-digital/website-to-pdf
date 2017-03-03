@@ -3,6 +3,7 @@ import ChromePromise from 'chrome-promise';
 const chromep = new ChromePromise({chrome, Promise});
 import jsPDF from 'jspdf';
 import escapeStringRegexp from 'escape-string-regexp';
+import { slug } from '../utils';
 
 class ScanJob {
 
@@ -18,9 +19,11 @@ class ScanJob {
             new RegExp('^' + escapeStringRegexp(tab.url))
         ];
 
+        const folder = slug(tab.title);
+
         let page;
         while(page = pages.filter(page => !page.done)[0]){
-            await page.scan({tab});
+            await page.scan({tab, folder});
             const links = await page.getLinks(tab);
 
 
@@ -57,7 +60,7 @@ class Page {
         this.url = url;
     }
 
-    async scan({tab}) {
+    async scan({tab, folder}) {
         tab = await chromep.tabs.get(tab.id);
         console.log('Scanning tab ', tab);
         if (tab.url != this.url) {
@@ -96,7 +99,7 @@ class Page {
 
         const download = await chromep.downloads.download({
             url: pdfDataUri,
-            filename: 'pdfs/pdf.pdf'
+            filename: `pdfs/${folder}/${slug(tab.title)}.pdf`
         });
 
         console.log('Download done!', download);
