@@ -64,6 +64,7 @@ class Page {
             const loadingCompleted = new Promise(r => {
                 const onUpdate = async (tabId, info) => {
                     if(tabId == tab.id && info.status == 'complete'){
+                        // Tab has completed loading
                         chrome.tabs.onUpdated.removeListener(onUpdate);
                         r(await chromep.tabs.get(tab.id));
                     }
@@ -73,7 +74,7 @@ class Page {
             console.debug('Navigating to', this.url);
             await chromep.tabs.update(tab.id, {url: this.url});
             console.debug('Waiting for page to complete loading..')
-            await loadingCompleted;
+            tab = await loadingCompleted;
         }
 
         console.debug('Injecting script..');
