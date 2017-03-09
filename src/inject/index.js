@@ -1,3 +1,8 @@
+import ChromePromise from 'chrome-promise';
+const chromep = new ChromePromise({chrome, Promise});
+import jsPDF from 'jspdf';
+import { slug } from '../utils';
+
 // TODO: Only inject if wasn't injected before
 chrome.runtime.onMessage.addListener((message = {}, sender, sendResponse) => {
 
@@ -14,6 +19,9 @@ chrome.runtime.onMessage.addListener((message = {}, sender, sendResponse) => {
         case 'getLinks':
             sendResponse(getLinks());
             return;
+        case 'captureAndDownload':
+            captureAndDownload(message, sendResponse);
+            return true;
     }
 });
 
@@ -83,4 +91,45 @@ function getPositions() {
 function getLinks() {
     return Array.prototype.slice.call(document.getElementsByTagName('a'))
         .map(element => element.href);
+}
+
+async function captureAndDownload({tab, folder, positions}, callback) {
+
+    console.debug('Creating pdf..');
+    let pdf = new jsPDF({
+        unit: 'mm',
+        format: [positions.total.width, positions.total.height]
+    });
+
+    for (let pos of positions.arrangements) {
+        console.debug('Scrolling page to', ...pos);
+        window.scrollTo(...pos);
+        pos = await new Promise(r => {
+            window.requestAnimationFrame(() =>
+                window.requestAnimationFrame(() =>
+                    window.requestAnimationFrame(() =>
+                        r([window.scrollX, window.scrollY])
+                    )
+                )
+            );
+        });
+
+        // TIMEOUT
+        await new Promise(r => setTimeout(r, 100));
+
+        console.debug('Capturing page..');
+        console.log(chromep, chrome);
+        const dataUrl = await chromep.runtime.sendMessage({action: 'capture', windowId: tab.windowId});
+        console.debug('Adding image to pdf..');
+        pdf.addImage(dataUrl, pos[0], pos[1], positions.window.width, positions.window.height)
+    }
+
+    console.debug('Generating pdf..');
+    let pdfDataUri = pdf.output('bloburi');
+
+    console.debug('Downloading pdf..');
+
+    await chromep.runtime.sendMessage({action: 'download', url: pdfDataUri, filename: `pdfs/${folder}/${slug(tab.title)}.pdf`});
+
+    callback();
 }

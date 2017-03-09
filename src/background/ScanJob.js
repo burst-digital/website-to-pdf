@@ -1,7 +1,5 @@
-
 import ChromePromise from 'chrome-promise';
 const chromep = new ChromePromise({chrome, Promise});
-import jsPDF from 'jspdf';
 import escapeStringRegexp from 'escape-string-regexp';
 import { slug } from '../utils';
 
@@ -82,34 +80,7 @@ class Page {
         console.debug('Calculate positions..');
         const positions = await this.getPositions(tab);
 
-        console.debug('Creating pdf..');
-        let pdf = new jsPDF({
-            unit: 'mm',
-            format: [positions.total.width, positions.total.height]
-        });
-
-        for (let pos of positions.arrangements) {
-            console.debug('Scrolling page to', ...pos);
-            pos = await this.scrollTo(tab, pos);
-            console.debug('Capturing page..');
-            const dataUrl = await chromep.tabs.captureVisibleTab(tab.windowId, {format: 'png'});
-            console.debug('Adding image to pdf..');
-            pdf.addImage(dataUrl, pos[0], pos[1], positions.window.width, positions.window.height)
-        }
-
-        console.debug('Generating pdf..');
-        let pdfDataUri = pdf.output('bloburi');
-
-        console.debug('Downloading pdf..');
-        await chromep.downloads.download({
-            url: pdfDataUri,
-            filename: `pdfs/${folder}/${slug(tab.title)}.pdf`
-        });
-
-        // Clean up
-        global.URL.revokeObjectURL(pdfDataUri)
-        pdfDataUri = null;
-        pdf = null;
+        await this.captureAndDownload({tab, folder, positions});
     }
 
     getPositions(tab) {
@@ -122,6 +93,10 @@ class Page {
 
     getLinks(tab) {
         return chromep.tabs.sendMessage(tab.id, {action: 'getLinks'});
+    }
+
+    captureAndDownload({tab, folder, positions}) {
+        return chromep.tabs.sendMessage(tab.id, {action: 'captureAndDownload', tab, folder, positions});
     }
 
 }

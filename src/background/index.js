@@ -8,6 +8,15 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse){
         case 'newScanJob':
             new ScanJob({tab: message.tab});
             return sendResponse();
+        case 'capture':
+            chrome.tabs.captureVisibleTab(message.windowId, {format: 'png'}, sendResponse);
+            return true;
+        case 'download':
+            chrome.downloads.download({
+                url: message.url,
+                filename: message.filename
+            }, sendResponse);
+            return true;
     }
 
 });
