@@ -6,7 +6,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse){
 
     switch(message.action){
         case 'newScanJob':
-            new ScanJob({tab: message.tab});
+            new ScanJob(message.settings);
             return sendResponse();
         case 'capture':
             chrome.tabs.captureVisibleTab(message.windowId, {format: 'png'}, sendResponse);

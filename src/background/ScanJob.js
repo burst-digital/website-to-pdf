@@ -9,35 +9,34 @@ class ScanJob {
         this._constructor(args);
     }
 
-    async _constructor({tab, batch = true}) {
+    async _constructor({tab, batch, folder, waitAfterLoading, waitBeforeCapture, filters: filtersText}) {
         console.debug('New ScanJob for tab', tab);
         const pages = [new Page({url: tab.url})];
 
-        const filters = [
-            new RegExp('^' + escapeStringRegexp(tab.url))
-        ];
-
-        const folder = slug(tab.title);
+        const filters = filtersText.split('\n').map(text => new RegExp(text));
 
         let page;
         while(page = pages.filter(page => !page.done)[0]){
-            await page.scan({tab, folder});
-            const links = await page.getLinks(tab);
+            await page.scan({tab, folder, waitAfterLoading, waitBeforeCapture});
 
-            links
-                .map(link => link.split('#')[0])
-                .filter(link => link.length)
-                .filter(link => {
-                    return !filters.some(filter => {
-                        return (!filter.test(link));
+            if(batch) {
+                const links = await page.getLinks(tab);
+
+                links
+                    .map(link => link.split('#')[0])
+                    .filter(link => link.length)
+                    .filter(link => {
+                        return !filters.some(filter => {
+                            return (!filter.test(link));
+                        })
                     })
-                })
-                .forEach(link => {
-                    if(!pages.map(page => page.url).includes(link)) {
-                        console.debug('Adding link', link, 'to index.')
-                        pages.push(new Page({url: link}));
-                    }
-                });
+                    .forEach(link => {
+                        if (!pages.map(page => page.url).includes(link)) {
+                            console.debug('Adding link', link, 'to index.')
+                            pages.push(new Page({url: link}));
+                        }
+                    });
+            }
             page.done = true;
         }
 
@@ -55,7 +54,7 @@ class Page {
         this.url = url;
     }
 
-    async scan({tab, folder}) {
+    async scan({tab, folder, waitAfterLoading, waitBeforeCapture}) {
         tab = await chromep.tabs.get(tab.id);
 
         if (tab.url != this.url) {
@@ -69,10 +68,20 @@ class Page {
                 };
                 chrome.tabs.onUpdated.addListener(onUpdate);
             });
+
+            // Sometimes, it loads too quickly and the Listner is not set up yet.
+            // A timeout of 20 ms fixes this.
+            await new Promise(r => setTimeout(r, 20));
+
             console.debug('Navigating to', this.url);
             await chromep.tabs.update(tab.id, {url: this.url});
+
             console.debug('Waiting for page to complete loading..')
             tab = await loadingCompleted;
+
+            if(waitAfterLoading) {
+                await new Promise(r => setTimeout(r, waitAfterLoading * 1000));
+            }
         }
 
         console.debug('Injecting script..');
@@ -80,7 +89,7 @@ class Page {
         console.debug('Calculate positions..');
         const positions = await this.getPositions(tab);
 
-        await this.captureAndDownload({tab, folder, positions});
+        await this.captureAndDownload({tab, folder, positions, waitBeforeCapture});
     }
 
     getPositions(tab) {
@@ -95,8 +104,8 @@ class Page {
         return chromep.tabs.sendMessage(tab.id, {action: 'getLinks'});
     }
 
-    captureAndDownload({tab, folder, positions}) {
-        return chromep.tabs.sendMessage(tab.id, {action: 'captureAndDownload', tab, folder, positions});
+    captureAndDownload({tab, folder, positions, waitBeforeCapture}) {
+        return chromep.tabs.sendMessage(tab.id, {action: 'captureAndDownload', tab, folder, positions, waitBeforeCapture});
     }
 
 }

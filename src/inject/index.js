@@ -93,7 +93,7 @@ function getLinks() {
         .map(element => element.href);
 }
 
-async function captureAndDownload({tab, folder, positions}, callback) {
+async function captureAndDownload({tab, folder, positions, waitBeforeCapture}, callback) {
 
     console.debug('Creating pdf..');
     let pdf = new jsPDF({
@@ -104,6 +104,7 @@ async function captureAndDownload({tab, folder, positions}, callback) {
     for (let pos of positions.arrangements) {
         console.debug('Scrolling page to', ...pos);
         window.scrollTo(...pos);
+        await new Promise(r => setTimeout(r, waitBeforeCapture * 1000));
         pos = await new Promise(r => {
             window.requestAnimationFrame(() =>
                 window.requestAnimationFrame(() =>
