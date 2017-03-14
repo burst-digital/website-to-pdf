@@ -1,11 +1,12 @@
 import ScanJob from './ScanJob';
+import store from './store';
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.info('Got message:', message);
 
   switch (message.action) {
     case 'newScanJob':
-      new ScanJob(message.settings);
+      store.push(new ScanJob(message.settings));
       return sendResponse();
     case 'capture':
       chrome.tabs.captureVisibleTab(message.windowId, { format: 'png' }, sendResponse);
@@ -16,5 +17,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         filename: message.filename,
       }, sendResponse);
       return true;
+    default:
+      return false;
   }
 });
