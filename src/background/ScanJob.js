@@ -14,7 +14,7 @@ class ScanJob {
 
     let page;
     while (page = pages.filter(page => !page.done)[0]) {
-      await page.scan({ tab, folder, waitAfterLoading, waitBeforeCapture });
+      await page.scan({ tabId: tab.id, folder, waitAfterLoading, waitBeforeCapture });
 
       if (batch) {
         const links = await page.getLinks(tab);
