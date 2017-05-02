@@ -3,10 +3,13 @@ Chrome Extension: Website to PDF
 
 [![Travis branch](https://img.shields.io/travis/burst-digital/website-to-pdf/master.svg)](https://travis-ci.org/burst-digital/website-to-pdf)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/d/mgamfighbfghbljpbmeapmlhgagbfpbm.svg)]()
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/mgamfighbfghbljpbmeapmlhgagbfpbm.svg)]()
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/rating/mgamfighbfghbljpbmeapmlhgagbfpbm.svg)]()
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/price/mgamfighbfghbljpbmeapmlhgagbfpbm.svg)]()
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/mgamfighbfghbljpbmeapmlhgagbfpbm.svg?label=%20)]()
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/rating/mgamfighbfghbljpbmeapmlhgagbfpbm.svg?label=%20)]()
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/price/mgamfighbfghbljpbmeapmlhgagbfpbm.svg?label=%20)]()
 [![Code Climate](https://img.shields.io/codeclimate/github/burst-digital/website-to-pdf.svg)]()
+[![license](https://img.shields.io/github/license/burst-digital/website-to-pdf.svg)]()
+[![dependencies Status](https://david-dm.org/burst-digital/website-to-pdf/status.svg)](https://david-dm.org/burst-digital/website-to-pdf)
+[![devDependencies Status](https://david-dm.org/burst-digital/website-to-pdf/dev-status.svg)](https://david-dm.org/burst-digital/website-to-pdf?type=dev)
 
 ## Development
 
