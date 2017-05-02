@@ -13,13 +13,41 @@ module.exports = {
   },
   module: {
     rules: [
-            { test: /\.jsx?$/, use: 'babel-loader', exclude: /node_modules/ },
-      { test: /\.s?css$/,
+      {
+        test: /\.jsx?$/,
+        use: 'babel-loader',
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.s?css$/,
         use: [
           'style-loader',
-                { loader: 'css-loader', options: { modules: true, importLoaders: 1 } },
+          { loader: 'css-loader', options: { modules: true, importLoaders: 1 } },
           'postcss-loader',
-        ] },
+        ],
+      },
+      {
+        test: /\/manifest\.json$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+            },
+          },
+          'extract-loader',
+          {
+            loader: 'chrome-manifest-loader',
+            options: {
+              mapVersion: true,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.png$/,
+        use: 'file-loader',
+      },
     ],
   },
   plugins: [

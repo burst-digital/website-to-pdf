@@ -1,4 +1,5 @@
 import 'normalize.css';
+import '../manifest.json';
 
 import React from 'react';
 

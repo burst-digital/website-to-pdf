@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+
+  "name": "Site crawler to PDF",
+  "description": "Crawl and screenshot a complete website.",
+
+  "browser_action": {
+    "default_icon": "require(./icon.png)",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "permissions": [ "activeTab", "tab", "unlimitedStorage", "downloads", "<all_urls>" ],
+  "icons": {
+    "128": "require(./icon.png)"
+  }
+}
