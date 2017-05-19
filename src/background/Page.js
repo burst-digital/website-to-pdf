@@ -39,7 +39,7 @@ export default class Page {
     }
 
     console.debug('Injecting script..');
-    await chromep.tabs.executeScript(tab.id, { file: 'dist/inject.js' });
+    await chromep.tabs.executeScript(tab.id, { file: 'inject.js' });
     console.debug('Calculate positions..');
     const positions = await this.getPositions(tab);
 
