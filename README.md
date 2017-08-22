@@ -1,6 +1,8 @@
 Chrome Extension: Website to PDF
 ================================
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/burst-digital/website-to-pdf.svg)](https://greenkeeper.io/)
+
 [![Travis branch](https://img.shields.io/travis/burst-digital/website-to-pdf/master.svg)](https://travis-ci.org/burst-digital/website-to-pdf)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/d/mgamfighbfghbljpbmeapmlhgagbfpbm.svg)]()
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/mgamfighbfghbljpbmeapmlhgagbfpbm.svg?label=%20)]()
